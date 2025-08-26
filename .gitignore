@@ -1,0 +1,20 @@
+markdown
+#ambiente virtual
+venv/
+#arquivos de cache do python
+__pycache__/
+*.py[cod]
+*.pyo
+# Configurações locais
+*.env
+
+# Arquivos do Django
+db.sqlite3
+
+# Arquivos temporários do sistema
+*.log
+*.pot
+*.pyc
+*.so
+*.swp
+.DS_Store
