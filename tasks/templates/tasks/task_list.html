@@ -1,53 +1,61 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <title>Minhas Tarefas</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body>
-<div class="container mt-4">
-    <h1 class="mb-4">Minhas Tarefas</h1>
+{% extends 'tasks/base.html' %}
 
-    <!-- Mensagens -->
-    {% if messages %}
-        {% for message in messages %}
-            <div class="alert alert-info">
-                {{ message }}
-            </div>
-        {% endfor %}
-    {% endif %}
+{% block title %}Lista de Tarefas{% endblock %}
 
-    <!-- Botão para criar nova tarefa -->
-    <a href="{% url 'create_task' %}" class="btn btn-primary mb-3">Criar Tarefa</a>
-
-    <!-- Lista de tarefas -->
-    <ul class="list-group">
-        {% for task in tasks %}
-            <li class="list-group-item d-flex flex-column mb-2">
-                <div class="d-flex justify-content-between align-items-center">
-                    <div>
-                        <strong>{{ task.title }}</strong> - 
+{% block content %}
+<div class="row">
+    {% for task in tasks %}
+        <div class="col-md-6 mb-3">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        {{ task.title }}
                         {% if task.completed %}
                             <span class="badge bg-success">Concluída</span>
                         {% else %}
                             <span class="badge bg-warning text-dark">Pendente</span>
                         {% endif %}
-                    </div>
-                    <div>
-                        <a href="{% url 'task_update' task.id %}" class="btn btn-sm btn-secondary">Editar</a>
-                        <a href="{% url 'task_delete' task.id %}" class="btn btn-sm btn-danger">Excluir</a>
-                        <a href="{% url 'toggle_complete' task.id %}" class="btn btn-sm btn-success">
-                            {% if task.completed %}Marcar como Pendente{% else %}Marcar como Concluída{% endif %}
+                        {% if task.priority == 'ALTA' %}
+                            <span class="badge bg-danger">Alta</span>
+                        {% elif task.priority == 'MEDIA' %}
+                            <span class="badge bg-secondary">Média</span>
+                        {% else %}
+                            <span class="badge bg-success">Baixa</span>
+                        {% endif %}
+                    </h5>
+                    <p class="card-text">{{ task.description }}</p>
+                        {% if task.due_date %}
+                                <p class="text-muted">
+                                    Vencimento: 
+                                    {% if task.due_date < today and not task.completed %}
+                                        <span class="text-danger">{{ task.due_date }}</span>
+                                    {% else %}
+                                        {{ task.due_date }}
+                                    {% endif %}
+                                </p>
+                            {% endif %}
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <a href="{% url 'task_update' task.id %}" class="btn btn-sm btn-outline-secondary">
+                                <i class="bi bi-pencil"></i> Editar
+                            </a>
+                            <a href="{% url 'task_delete' task.id %}" class="btn btn-sm btn-outline-danger">
+                                <i class="bi bi-trash"></i> Excluir
+                            </a>
+                        </div>
+                        <a href="{% url 'toggle_complete' task.id %}" class="btn btn-sm btn-outline-success">
+                            {% if task.completed %}
+                                <i class="bi bi-x-circle"></i> Marcar como Pendente
+                            {% else %}
+                                <i class="bi bi-check-circle"></i> Marcar como Concluída
+                            {% endif %}
                         </a>
                     </div>
                 </div>
-                <p class="mt-2">{{ task.description }}</p>
-            </li>
-        {% empty %}
-            <li class="list-group-item">Nenhuma tarefa encontrada.</li>
-        {% endfor %}
-    </ul>
+            </div>
+        </div>
+    {% empty %}
+        <p class="text-muted">Nenhuma tarefa encontrada.</p>
+    {% endfor %}
 </div>
-</body>
-</html>
+{% endblock %}

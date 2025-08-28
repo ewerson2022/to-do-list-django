@@ -3,6 +3,7 @@ from django.contrib import messages
 from .forms import TaskForm
 from .models import Task
 from django.shortcuts import get_object_or_404
+from django.utils import timezone
 
 def create_task(request):
     if request.method == 'POST':
@@ -18,7 +19,7 @@ def create_task(request):
 
 def task_list(request):
         tasks = Task.objects.all()
-        return render(request, 'tasks/task_list.html', {'tasks': tasks})
+        return render(request, 'tasks/task_list.html', {'tasks': tasks, 'today': timezone.now().date()})
 
 
 def task_update(request, id):
